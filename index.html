@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plumbers Secretary</title>
+  <meta name="description" content="Done by plumbers, for plumbers. The AI secretary that never calls in sick. Test the demo, review pricing, and start your 2-week free trial."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ── */
+    :root{
+      --navy:#1a2230;
+      --navy-deep:#111820;
+      --navy-mid:#1f2d40;
+      --navy-card:#233044;
+      --orange:#e87a1e;
+      --orange-bright:#f08c2e;
+      --white:#ffffff;
+      --offwhite:#f5f0e8;
+      --text-dim:rgba(255,255,255,.62);
+      --text-muted:rgba(255,255,255,.42);
+      --border:rgba(255,255,255,.10);
+      --border-card:rgba(255,255,255,.13);
+      --font-serif:'Playfair Display',Georgia,serif;
+      --font-sans:'Inter',system-ui,sans-serif;
+      --radius:1rem;
+      --content:1120px;
+    }
+    *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--navy);color:var(--white);font-family:var(--font-sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+    img,svg{display:block;max-width:100%}
+    a{text-decoration:none;color:inherit}
+    .wrap{width:min(calc(100% - 2.5rem),var(--content));margin-inline:auto}
+    .caps{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;font-weight:600}
+
+    /* ── HEADER ── */
+    .site-header{background:var(--navy-deep);border-bottom:1px solid var(--border);padding:.9rem 0}
+    .header-inner{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+    .header-bulletin{color:var(--text-muted)}
+    .header-brand{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:1.1rem}
+    .header-brand .icon{color:var(--orange)}
+    .header-tagline{color:var(--text-dim)}
+
+    /* ── HERO ── */
+    .hero{padding:3.5rem 0 2.5rem;background:radial-gradient(ellipse at 60% -10%,rgba(232,122,30,.13) 0%,transparent 55%),var(--navy)}
+    .hero-inner{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:start;margin-bottom:2.5rem}
+    .hero-label{color:var(--text-muted);margin-bottom:1.1rem}
+    .hero-headline{font-family:var(--font-serif);font-size:clamp(3rem,5.5vw,5.5rem);line-height:.95;letter-spacing:-.03em;max-width:9ch;margin-bottom:1.5rem}
+    .hero-headline em{font-style:italic;color:var(--orange)}
+    .hero-sub{color:var(--text-dim);font-size:1.1rem;max-width:46ch;margin-bottom:.8rem}
+    .hero-built{color:var(--text-muted);font-size:.82rem;letter-spacing:.18em;text-transform:uppercase;margin-top:.8rem}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:1.8rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 1.4rem;border-radius:999px;font-weight:700;font-size:.95rem;min-height:48px;transition:.15s ease;cursor:pointer;border:none;font-family:inherit}
+    .btn-primary{background:var(--orange);color:var(--white)} .btn-primary:hover{background:var(--orange-bright)}
+    .btn-ghost{background:rgba(255,255,255,.08);color:var(--white);border:1px solid var(--border-card)} .btn-ghost:hover{background:rgba(255,255,255,.13)}
+    .hero-demo{padding:1.6rem;background:var(--navy-mid);border:1px solid var(--border-card);border-radius:calc(var(--radius)*1.2);min-width:270px;max-width:300px;flex-shrink:0}
+    .demo-dot{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem} .dot{width:9px;height:9px;border-radius:50%;background:var(--orange)}
+    .demo-number{font-family:var(--font-serif);font-size:1.9rem;margin:.3rem 0 .6rem;color:var(--orange)}
+    .demo-note{color:var(--text-dim);font-size:.85rem}
+
+    /* ── STATS ── */
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1px}
+    .stat{background:var(--navy-mid);padding:1.6rem 1.5rem}
+    .stat-label{color:var(--text-muted);margin-bottom:.7rem}
+    .stat-value{font-family:var(--font-serif);font-size:clamp(2rem,4vw,3.2rem);line-height:1;color:var(--orange);margin-bottom:.6rem}
+    .stat-desc{color:var(--text-dim);font-size:.875rem}
+
+    /* ── PRICING ── */
+    .pricing{padding:3rem 0}
+    .pricing-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:.75rem}
+    .pricing-title{font-family:var(--font-serif);font-size:clamp(1.8rem,3.2vw,2.8rem)} .pricing-title em{font-style:italic;color:var(--orange)}
+    .pricing-label{color:var(--text-muted)}
+    .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;align-items:start}
+    .tier{background:var(--navy-card);border:1px solid var(--border-card);border-radius:calc(var(--radius)*1.1);padding:1.7rem;position:relative}
+    .tier.growth{border-color:var(--orange);box-shadow:0 0 0 1px var(--orange)}
+    .tier-badge{position:absolute;left:50%;top:-1px;transform:translateX(-50%);background:var(--orange);color:var(--white);font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;padding:.35rem .9rem;border-radius:0 0 .6rem .6rem}
+    .tier-num{color:var(--text-muted);margin-bottom:.4rem}
+    .tier h3{font-family:var(--font-serif);font-size:1.9rem;margin:.15rem 0 .1rem}
+    .tier-price{font-family:var(--font-serif);font-size:2.9rem;line-height:1;color:var(--orange);margin:.8rem 0 .2rem}
+    .tier-price span{font-family:var(--font-sans);font-size:.85rem;color:var(--text-dim)}
+    .tier-tagline{color:var(--text-dim);font-style:italic;font-size:.9rem;margin-bottom:1rem}
+    .tier-divider{height:1px;background:var(--border);margin:.9rem 0}
+    .tier-note{color:var(--text-muted);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.7rem}
+    .tier ul{list-style:none;display:grid;gap:.65rem}
+    .tier li{display:flex;gap:.6rem;align-items:flex-start;font-size:.93rem;color:var(--text-dim)}
+    .tier li .check{color:var(--orange);font-weight:700;flex:none;margin-top:.05rem}
+
+    /* ── CTA FOOTER ── */
+    .cta-bar{background:var(--orange);padding:2.2rem 0}
+    .cta-inner{display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:center}
+    .cta-tag{background:var(--navy-deep);color:var(--white);padding:.7rem 1.1rem;border-radius:.7rem;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;white-space:nowrap;text-align:center;line-height:1.4}
+    .cta-text h2{font-family:var(--font-serif);font-size:clamp(1.3rem,2.6vw,2rem);color:var(--navy-deep);line-height:1.1}
+    .cta-text h2 em{font-style:italic}
+    .cta-text p{color:var(--navy-mid);margin-top:.35rem;font-size:.9rem}
+    .cta-text strong{color:var(--navy-deep)}
+    .btn-dark{background:var(--navy-deep);color:var(--white)} .btn-dark:hover{background:#0d141e}
+
+    /* ── PAGE FOOTER ── */
+    .site-footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:1.2rem 0}
+    .site-footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+    .site-footer a{color:var(--text-muted)} .site-footer a:hover{color:var(--white)}
+
+    /* ── DEMO SECTION ── */
+    .demo-section{padding:2.8rem 0}
+    .demo-card{background:var(--navy-mid);border:1px solid var(--border-card);border-radius:calc(var(--radius)*1.2);padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
+    .demo-card h2{font-family:var(--font-serif);font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:.6rem}
+    .demo-card p{color:var(--text-dim)}
+    .demo-steps{display:grid;gap:.8rem}
+    .step{display:flex;gap:.8rem;align-items:flex-start}
+    .step-num{width:30px;height:30px;background:var(--orange);border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;flex:none}
+    .step-body strong{display:block;font-size:.9rem} .step-body p{color:var(--text-dim);font-size:.85rem;margin:0}
+
+    @media(max-width:900px){
+      .hero-inner,.stats,.tiers,.cta-inner,.demo-card{grid-template-columns:1fr}
+      .hero-demo{max-width:100%;min-width:unset}
+      .pricing-header{flex-direction:column;align-items:flex-start}
+      .site-footer .wrap,.header-inner{flex-direction:column;align-items:flex-start;gap:.6rem}
+      .cta-tag{max-width:max-content}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="caps header-bulletin">Bulletin № 001 · Spring 2026</div>
+    <div class="header-brand">
+      <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h11a3 3 0 0 1 0 6H9"/><path d="M8 10 5 7l3-3"/><path d="M8 14h5a3 3 0 0 1 0 6H4"/><path d="M7 17 4 14l3-3"/></svg>
+      <span><strong>Plumbers</strong> Secretary</span>
+    </div>
+    <div class="caps header-tagline">Done by plumbers, for plumbers.</div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-inner">
+      <div>
+        <div class="caps hero-label">An open letter to plumbing pros</div>
+        <h1 class="hero-headline">The secretary that never <em>calls in sick.</em></h1>
+        <p class="hero-sub">"Never takes a day off, and answers every call at 2 AM — even when you're knee-deep in a job."</p>
+        <p class="hero-built">Built on the job site &nbsp;|&nbsp; <span style="color:var(--orange)">Done by plumbers, for plumbers.</span></p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="tel:+15550107473">📞 Call Demo Now</a>
+          <a class="btn btn-ghost" href="#pricing">View Pricing</a>
+          <a class="btn btn-ghost" href="#test">How to Test</a>
+        </div>
+      </div>
+      <aside class="hero-demo" id="test">
+        <div class="demo-dot">
+          <div class="dot"></div>
+          <span class="caps" style="color:var(--orange)">Live demo line</span>
+        </div>
+        <div class="caps" style="color:var(--text-muted);margin-bottom:.3rem">Your demo number</div>
+        <div class="demo-number">(555) 010-PIPE</div>
+        <p class="demo-note">Call this number right now to hear the AI secretary answer live. Replace with your real GHL number before sending.</p>
+        <div style="height:1px;background:var(--border);margin:1rem 0"></div>
+        <p class="demo-note">Try asking about emergency plumbing, booking a service call, or business hours.</p>
+      </aside>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <div class="caps stat-label">The cost of missed calls</div>
+        <div class="stat-value">$1,200<sup style="font-size:.55em">+</sup>/mo</div>
+        <p class="stat-desc">Average revenue the typical plumber loses to voicemail and homeowners who hang up and dial the next guy.</p>
+      </div>
+      <div class="stat">
+        <div class="caps stat-label">Always answered</div>
+        <div class="stat-value">24/7</div>
+        <p class="stat-desc">Calls answered at 2 AM, on Sundays, on holidays, and while you're elbow-deep in a P-trap.</p>
+      </div>
+      <div class="stat">
+        <div class="caps stat-label">Setup time</div>
+        <div class="stat-value">1 day</div>
+        <p class="stat-desc">Pick a number, point your line — your AI secretary is on the job today.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ── -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="pricing-header">
+      <div>
+        <h2 class="pricing-title">Three tiers. <em>One promise.</em></h2>
+      </div>
+      <div class="caps pricing-label">Pricing · Plain &amp; simple</div>
+    </div>
+
+    <div class="tiers">
+      <!-- TIER 01 -->
+      <article class="tier starter">
+        <div class="caps tier-num">Tier 01 · Starter</div>
+        <h3>Starter</h3>
+        <div class="tier-price">$95 <span>/ mo</span></div>
+        <div class="tier-tagline">"Never miss a call again."</div>
+        <ul>
+          <li><span class="check">✓</span><span>Dedicated local number</span></li>
+          <li><span class="check">✓</span><span>24/7 AI voice agent</span></li>
+          <li><span class="check">✓</span><span>Smart auto-built CRM</span></li>
+          <li><span class="check">✓</span><span>Self-booking calendar</span></li>
+          <li><span class="check">✓</span><span>Unified conversations inbox</span></li>
+        </ul>
+      </article>
+
+      <!-- TIER 02 -->
+      <article class="tier growth">
+        <div class="tier-badge">Most popular</div>
+        <div class="caps tier-num">Tier 02 · Growth</div>
+        <h3>Growth</h3>
+        <div class="tier-price">$295 <span>/ mo</span></div>
+        <div class="tier-tagline">"Automate your follow-up &amp; sales pipeline."</div>
+        <div class="tier-divider"></div>
+        <div class="caps tier-note">Everything in Starter, plus —</div>
+        <ul>
+          <li><span class="check">✓</span><span>AI conversation agent</span></li>
+          <li><span class="check">✓</span><span>Visual sales pipeline</span></li>
+          <li><span class="check">✓</span><span>Missed-call text-back &amp; workflows</span></li>
+          <li><span class="check">✓</span><span>Reputation management</span></li>
+          <li><span class="check">✓</span><span>Invoices &amp; payment links</span></li>
+        </ul>
+      </article>
+
+      <!-- TIER 03 -->
+      <article class="tier full">
+        <div class="caps tier-num">Tier 03 · Full System</div>
+        <h3>Full System</h3>
+        <div class="tier-price">$495 <span>/ mo</span></div>
+        <div class="tier-tagline">"A complete growth engine on autopilot."</div>
+        <div class="tier-divider"></div>
+        <div class="caps tier-note">Everything in Growth, plus —</div>
+        <ul>
+          <li><span class="check">✓</span><span>Lead-gen funnels &amp; sites</span></li>
+          <li><span class="check">✓</span><span>Email, SMS &amp; social campaigns</span></li>
+          <li><span class="check">✓</span><span>Pipeline &amp; ROI dashboards</span></li>
+          <li><span class="check">✓</span><span>Call tracking &amp; reports</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ORANGE BAR ── -->
+<div class="cta-bar">
+  <div class="wrap cta-inner">
+    <div class="cta-tag">14 days<br>FREE</div>
+    <div class="cta-text">
+      <h2>Stop missing the calls that <em>pay the bills.</em></h2>
+      <p>Your first two weeks are <strong>completely free</strong> — no credit card, no strings. Just results.</p>
+      <p style="font-size:.78rem;margin-top:.35rem;color:var(--navy-mid)">2-min setup · Cancel any time</p>
+    </div>
+    <div>
+      <a class="btn btn-dark" href="tel:+15550107473">Start Free Trial →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── SITE FOOTER ── -->
+<footer class="site-footer">
+  <div class="wrap">
+    <span class="caps" style="color:var(--text-muted)">PLUMBERSSECRETARY.COM</span>
+    <span style="color:var(--text-muted)">Built by plumbers, on the jobsite</span>
+    <div style="display:flex;gap:1.4rem;flex-wrap:wrap">
+      <a href="tel:+15550107473" class="caps">(555) 010-PIPE</a>
+      <a href="mailto:hello@plumberssecretary.com" class="caps">HELLO@PLUMBERSSECRETARY.COM</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
