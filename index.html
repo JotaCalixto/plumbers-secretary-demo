@@ -8,25 +8,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Retell Web SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/retell-client-js-sdk@latest/dist/index.umd.js"></script>
   <style>
-    /* ── TOKENS ── */
     :root{
-      --navy:#1a2230;
-      --navy-deep:#111820;
-      --navy-mid:#1f2d40;
-      --navy-card:#233044;
-      --orange:#e87a1e;
-      --orange-bright:#f08c2e;
-      --white:#ffffff;
-      --offwhite:#f5f0e8;
-      --text-dim:rgba(255,255,255,.62);
-      --text-muted:rgba(255,255,255,.42);
-      --border:rgba(255,255,255,.10);
-      --border-card:rgba(255,255,255,.13);
-      --font-serif:'Playfair Display',Georgia,serif;
-      --font-sans:'Inter',system-ui,sans-serif;
-      --radius:1rem;
-      --content:1120px;
+      --navy:#1a2230;--navy-deep:#111820;--navy-mid:#1f2d40;--navy-card:#233044;
+      --orange:#e87a1e;--orange-bright:#f08c2e;--white:#ffffff;--offwhite:#f5f0e8;
+      --text-dim:rgba(255,255,255,.62);--text-muted:rgba(255,255,255,.42);
+      --border:rgba(255,255,255,.10);--border-card:rgba(255,255,255,.13);
+      --font-serif:'Playfair Display',Georgia,serif;--font-sans:'Inter',system-ui,sans-serif;
+      --radius:1rem;--content:1120px;
     }
     *,*:before,*:after{box-sizing:border-box;margin:0;padding:0}
     html{scroll-behavior:smooth}
@@ -35,16 +26,12 @@
     a{text-decoration:none;color:inherit}
     .wrap{width:min(calc(100% - 2.5rem),var(--content));margin-inline:auto}
     .caps{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;font-weight:600}
-
-    /* ── HEADER ── */
     .site-header{background:var(--navy-deep);border-bottom:1px solid var(--border);padding:.9rem 0}
     .header-inner{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
     .header-bulletin{color:var(--text-muted)}
     .header-brand{display:flex;align-items:center;gap:.55rem;font-weight:700;font-size:1.1rem}
     .header-brand .icon{color:var(--orange)}
     .header-tagline{color:var(--text-dim)}
-
-    /* ── HERO ── */
     .hero{padding:3.5rem 0 2.5rem;background:radial-gradient(ellipse at 60% -10%,rgba(232,122,30,.13) 0%,transparent 55%),var(--navy)}
     .hero-inner{display:grid;grid-template-columns:1fr auto;gap:2.5rem;align-items:start;margin-bottom:2.5rem}
     .hero-label{color:var(--text-muted);margin-bottom:1.1rem}
@@ -55,20 +42,25 @@
     .hero-actions{display:flex;flex-wrap:wrap;gap:.9rem;margin-top:1.8rem}
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 1.4rem;border-radius:999px;font-weight:700;font-size:.95rem;min-height:48px;transition:.15s ease;cursor:pointer;border:none;font-family:inherit}
     .btn-primary{background:var(--orange);color:var(--white)} .btn-primary:hover{background:var(--orange-bright)}
+    .btn-primary:disabled{opacity:.7;cursor:not-allowed}
     .btn-ghost{background:rgba(255,255,255,.08);color:var(--white);border:1px solid var(--border-card)} .btn-ghost:hover{background:rgba(255,255,255,.13)}
+    .btn-end{background:#c0392b;color:var(--white)} .btn-end:hover{background:#a93226}
     .hero-demo{padding:1.6rem;background:var(--navy-mid);border:1px solid var(--border-card);border-radius:calc(var(--radius)*1.2);min-width:270px;max-width:300px;flex-shrink:0}
-    .demo-dot{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem} .dot{width:9px;height:9px;border-radius:50%;background:var(--orange)}
+    .demo-dot{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+    .dot{width:9px;height:9px;border-radius:50%;background:var(--orange)}
+    .dot.active{background:#2ecc71;animation:pulse 1.2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
     .demo-number{font-family:var(--font-serif);font-size:1.9rem;margin:.3rem 0 .6rem;color:var(--orange)}
     .demo-note{color:var(--text-dim);font-size:.85rem}
-
-    /* ── STATS ── */
+    .call-status{margin-top:.9rem;padding:.6rem .9rem;border-radius:.6rem;font-size:.82rem;font-weight:600;display:none}
+    .call-status.connecting{display:block;background:rgba(232,122,30,.18);color:var(--orange)}
+    .call-status.active{display:block;background:rgba(46,204,113,.15);color:#2ecc71}
+    .call-status.error{display:block;background:rgba(192,57,43,.2);color:#e74c3c}
     .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1px}
     .stat{background:var(--navy-mid);padding:1.6rem 1.5rem}
     .stat-label{color:var(--text-muted);margin-bottom:.7rem}
     .stat-value{font-family:var(--font-serif);font-size:clamp(2rem,4vw,3.2rem);line-height:1;color:var(--orange);margin-bottom:.6rem}
     .stat-desc{color:var(--text-dim);font-size:.875rem}
-
-    /* ── PRICING ── */
     .pricing{padding:3rem 0}
     .pricing-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:2rem;flex-wrap:wrap;gap:.75rem}
     .pricing-title{font-family:var(--font-serif);font-size:clamp(1.8rem,3.2vw,2.8rem)} .pricing-title em{font-style:italic;color:var(--orange)}
@@ -87,8 +79,6 @@
     .tier ul{list-style:none;display:grid;gap:.65rem}
     .tier li{display:flex;gap:.6rem;align-items:flex-start;font-size:.93rem;color:var(--text-dim)}
     .tier li .check{color:var(--orange);font-weight:700;flex:none;margin-top:.05rem}
-
-    /* ── CTA FOOTER ── */
     .cta-bar{background:var(--orange);padding:2.2rem 0}
     .cta-inner{display:grid;grid-template-columns:auto 1fr auto;gap:2rem;align-items:center}
     .cta-tag{background:var(--navy-deep);color:var(--white);padding:.7rem 1.1rem;border-radius:.7rem;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;white-space:nowrap;text-align:center;line-height:1.4}
@@ -97,35 +87,21 @@
     .cta-text p{color:var(--navy-mid);margin-top:.35rem;font-size:.9rem}
     .cta-text strong{color:var(--navy-deep)}
     .btn-dark{background:var(--navy-deep);color:var(--white)} .btn-dark:hover{background:#0d141e}
-
-    /* ── PAGE FOOTER ── */
     .site-footer{background:var(--navy-deep);border-top:1px solid var(--border);padding:1.2rem 0}
     .site-footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
     .site-footer a{color:var(--text-muted)} .site-footer a:hover{color:var(--white)}
-
-    /* ── DEMO SECTION ── */
-    .demo-section{padding:2.8rem 0}
-    .demo-card{background:var(--navy-mid);border:1px solid var(--border-card);border-radius:calc(var(--radius)*1.2);padding:2rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}
-    .demo-card h2{font-family:var(--font-serif);font-size:clamp(1.4rem,2.5vw,2rem);margin-bottom:.6rem}
-    .demo-card p{color:var(--text-dim)}
-    .demo-steps{display:grid;gap:.8rem}
-    .step{display:flex;gap:.8rem;align-items:flex-start}
-    .step-num{width:30px;height:30px;background:var(--orange);border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;flex:none}
-    .step-body strong{display:block;font-size:.9rem} .step-body p{color:var(--text-dim);font-size:.85rem;margin:0}
-
     @media(max-width:900px){
-      .hero-inner,.stats,.tiers,.cta-inner,.demo-card{grid-template-columns:1fr}
+      .hero-inner,.stats,.tiers,.cta-inner{grid-template-columns:1fr}
       .hero-demo{max-width:100%;min-width:unset}
       .pricing-header{flex-direction:column;align-items:flex-start}
       .site-footer .wrap,.header-inner{flex-direction:column;align-items:flex-start;gap:.6rem}
       .cta-tag{max-width:max-content}
     }
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
 <header class="site-header">
   <div class="wrap header-inner">
     <div class="caps header-bulletin">Bulletin № 001 · Spring 2026</div>
@@ -137,7 +113,6 @@
   </div>
 </header>
 
-<!-- ── HERO ── -->
 <section class="hero">
   <div class="wrap">
     <div class="hero-inner">
@@ -147,25 +122,25 @@
         <p class="hero-sub">"Never takes a day off, and answers every call at 2 AM — even when you're knee-deep in a job."</p>
         <p class="hero-built">Built on the job site &nbsp;|&nbsp; <span style="color:var(--orange)">Done by plumbers, for plumbers.</span></p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="tel:+13412098691">📞 Call Demo Now</a>
+          <button class="btn btn-primary" id="webCallBtn" onclick="handleCall()">🎙️ Talk to the AI Now</button>
           <a class="btn btn-ghost" href="#pricing">View Pricing</a>
-          <a class="btn btn-ghost" href="#test">How to Test</a>
         </div>
       </div>
+
       <aside class="hero-demo" id="test">
         <div class="demo-dot">
-          <div class="dot"></div>
-          <span class="caps" style="color:var(--orange)">Live demo line</span>
+          <div class="dot" id="statusDot"></div>
+          <span class="caps" style="color:var(--orange)" id="statusLabel">Live AI Demo</span>
         </div>
-        <div class="caps" style="color:var(--text-muted);margin-bottom:.3rem">Your demo number</div>
-        <div class="demo-number">(555) 010-PIPE</div>
-        <p class="demo-note">Call this number right now to hear the AI secretary answer live. Replace with your real GHL number before sending.</p>
+        <div class="caps" style="color:var(--text-muted);margin-bottom:.3rem">Click to speak with the agent</div>
+        <div class="demo-number">🎙️ Web Call</div>
+        <p class="demo-note">No phone needed. Click the button, allow mic access, and the AI secretary answers instantly — right from your browser.</p>
+        <div id="callStatus" class="call-status"></div>
         <div style="height:1px;background:var(--border);margin:1rem 0"></div>
-        <p class="demo-note">Try asking about emergency plumbing, booking a service call, or business hours.</p>
+        <p class="demo-note">Try: "I have a burst pipe", "What are your hours?", or "I need to book a service call."</p>
       </aside>
     </div>
 
-    <!-- STATS -->
     <div class="stats">
       <div class="stat">
         <div class="caps stat-label">The cost of missed calls</div>
@@ -186,18 +161,13 @@
   </div>
 </section>
 
-<!-- ── PRICING ── -->
 <section class="pricing" id="pricing">
   <div class="wrap">
     <div class="pricing-header">
-      <div>
-        <h2 class="pricing-title">Three tiers. <em>One promise.</em></h2>
-      </div>
+      <div><h2 class="pricing-title">Three tiers. <em>One promise.</em></h2></div>
       <div class="caps pricing-label">Pricing · Plain &amp; simple</div>
     </div>
-
     <div class="tiers">
-      <!-- TIER 01 -->
       <article class="tier starter">
         <div class="caps tier-num">Tier 01 · Starter</div>
         <h3>Starter</h3>
@@ -211,8 +181,6 @@
           <li><span class="check">✓</span><span>Unified conversations inbox</span></li>
         </ul>
       </article>
-
-      <!-- TIER 02 -->
       <article class="tier growth">
         <div class="tier-badge">Most popular</div>
         <div class="caps tier-num">Tier 02 · Growth</div>
@@ -229,8 +197,6 @@
           <li><span class="check">✓</span><span>Invoices &amp; payment links</span></li>
         </ul>
       </article>
-
-      <!-- TIER 03 -->
       <article class="tier full">
         <div class="caps tier-num">Tier 03 · Full System</div>
         <h3>Full System</h3>
@@ -249,7 +215,6 @@
   </div>
 </section>
 
-<!-- ── CTA ORANGE BAR ── -->
 <div class="cta-bar">
   <div class="wrap cta-inner">
     <div class="cta-tag">14 days<br>FREE</div>
@@ -259,22 +224,106 @@
       <p style="font-size:.78rem;margin-top:.35rem;color:var(--navy-mid)">2-min setup · Cancel any time</p>
     </div>
     <div>
-      <a class="btn btn-dark" href="tel:+16288959941">Start Free Trial →</a>
+      <a class="btn btn-dark" href="mailto:hello@plumberssecretary.com">Start Free Trial →</a>
     </div>
   </div>
 </div>
 
-<!-- ── SITE FOOTER ── -->
 <footer class="site-footer">
   <div class="wrap">
     <span class="caps" style="color:var(--text-muted)">PLUMBERSSECRETARY.COM</span>
     <span style="color:var(--text-muted)">Built by plumbers, on the jobsite</span>
     <div style="display:flex;gap:1.4rem;flex-wrap:wrap">
-      <a href="tel:+16288959941" class="caps">(555) 010-PIPE</a>
+      <a href="tel:+16288959941" class="caps">(628) 895-9941</a>
       <a href="mailto:hello@plumberssecretary.com" class="caps">HELLO@PLUMBERSSECRETARY.COM</a>
     </div>
   </div>
 </footer>
 
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+// IMPORTANT: Replace this URL with your actual n8n webhook URL
+const N8N_WEBHOOK_URL = 'https://YOUR_N8N_INSTANCE/webhook/retell-web-call';
+// ────────────────────────────────────────────────────────────
+
+let retellClient = null;
+let callActive = false;
+
+function setStatus(type, message) {
+  const el = document.getElementById('callStatus');
+  const dot = document.getElementById('statusDot');
+  const label = document.getElementById('statusLabel');
+  el.className = 'call-status ' + type;
+  el.textContent = message;
+  if (type === 'active') {
+    dot.classList.add('active');
+    label.textContent = 'Call Active';
+  } else if (type === 'connecting') {
+    dot.classList.remove('active');
+    label.textContent = 'Connecting...';
+  } else {
+    dot.classList.remove('active');
+    label.textContent = 'Live AI Demo';
+  }
+}
+
+async function handleCall() {
+  const btn = document.getElementById('webCallBtn');
+  if (callActive) {
+    endCall();
+    return;
+  }
+  btn.textContent = '⏳ Connecting...';
+  btn.disabled = true;
+  setStatus('connecting', 'Connecting to AI agent...');
+  try {
+    // Step 1: Hit your n8n webhook to get the access token
+    const res = await fetch(N8N_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'create_web_call' })
+    });
+    if (!res.ok) throw new Error('Failed to create web call');
+    const data = await res.json();
+    const accessToken = data.access_token;
+
+    // Step 2: Start the Retell web call
+    retellClient = new RetellWebClient();
+
+    retellClient.on('call_started', () => {
+      callActive = true;
+      btn.textContent = '🔴 End Call';
+      btn.disabled = false;
+      setStatus('active', '🟢 Connected — AI is listening...');
+    });
+
+    retellClient.on('call_ended', () => {
+      callActive = false;
+      btn.textContent = '🎙️ Talk to the AI Now';
+      btn.disabled = false;
+      setStatus('', '');
+      document.getElementById('statusLabel').textContent = 'Live AI Demo';
+    });
+
+    retellClient.on('error', (err) => {
+      callActive = false;
+      btn.textContent = '🎙️ Talk to the AI Now';
+      btn.disabled = false;
+      setStatus('error', '⚠️ Error: ' + (err.message || 'Something went wrong'));
+    });
+
+    await retellClient.startCall({ accessToken });
+  } catch (err) {
+    btn.textContent = '🎙️ Talk to the AI Now';
+    btn.disabled = false;
+    setStatus('error', '⚠️ Could not connect. Check your n8n webhook.');
+    console.error(err);
+  }
+}
+
+function endCall() {
+  if (retellClient) retellClient.stopCall();
+}
+</script>
 </body>
 </html>
