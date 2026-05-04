@@ -8,8 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Retell Web SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/retell-client-js-sdk@latest/dist/index.umd.js"></script>
   <style>
     :root{
       --navy:#1a2230;--navy-deep:#111820;--navy-mid:#1f2d40;--navy-card:#233044;
@@ -44,7 +42,6 @@
     .btn-primary{background:var(--orange);color:var(--white)} .btn-primary:hover{background:var(--orange-bright)}
     .btn-primary:disabled{opacity:.7;cursor:not-allowed}
     .btn-ghost{background:rgba(255,255,255,.08);color:var(--white);border:1px solid var(--border-card)} .btn-ghost:hover{background:rgba(255,255,255,.13)}
-    .btn-end{background:#c0392b;color:var(--white)} .btn-end:hover{background:#a93226}
     .hero-demo{padding:1.6rem;background:var(--navy-mid);border:1px solid var(--border-card);border-radius:calc(var(--radius)*1.2);min-width:270px;max-width:300px;flex-shrink:0}
     .demo-dot{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
     .dot{width:9px;height:9px;border-radius:50%;background:var(--orange)}
@@ -97,7 +94,6 @@
       .site-footer .wrap,.header-inner{flex-direction:column;align-items:flex-start;gap:.6rem}
       .cta-tag{max-width:max-content}
     }
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
   </style>
 </head>
 <body>
@@ -122,11 +118,10 @@
         <p class="hero-sub">"Never takes a day off, and answers every call at 2 AM — even when you're knee-deep in a job."</p>
         <p class="hero-built">Built on the job site &nbsp;|&nbsp; <span style="color:var(--orange)">Done by plumbers, for plumbers.</span></p>
         <div class="hero-actions">
-          <button class="btn btn-primary" id="webCallBtn" onclick="handleCall()">🎙️ Talk to the AI Now</button>
+          <button class="btn btn-primary" id="webCallBtn">🎙️ Talk to the AI Now</button>
           <a class="btn btn-ghost" href="#pricing">View Pricing</a>
         </div>
       </div>
-
       <aside class="hero-demo" id="test">
         <div class="demo-dot">
           <div class="dot" id="statusDot"></div>
@@ -134,7 +129,7 @@
         </div>
         <div class="caps" style="color:var(--text-muted);margin-bottom:.3rem">Click to speak with the agent</div>
         <div class="demo-number">🎙️ Web Call</div>
-        <p class="demo-note">No phone needed. Click the button, allow mic access, and the AI secretary answers instantly — right from your browser.</p>
+        <p class="demo-note">No phone needed. Click the button, allow mic access, and the AI secretary answers instantly.</p>
         <div id="callStatus" class="call-status"></div>
         <div style="height:1px;background:var(--border);margin:1rem 0"></div>
         <p class="demo-note">Try: "I have a burst pipe", "What are your hours?", or "I need to book a service call."</p>
@@ -240,90 +235,77 @@
   </div>
 </footer>
 
-<script>
-// ── CONFIG ──────────────────────────────────────────────────
-// IMPORTANT: Replace this URL with your actual n8n webhook URL
-const N8N_WEBHOOK_URL = 'https://vmi3102645.contaboserver.net/webhook/retell-web-call';
-// ────────────────────────────────────────────────────────────
+<script type="module">
+  // ── CONFIG — replace with your real n8n webhook URL ──
+  const N8N_WEBHOOK_URL = 'https://vmi3102645.contaboserver.net/webhook/retell-web-call';
 
-let retellClient = null;
-let callActive = false;
+  // Load Retell SDK via ESM (fixes the EventEmitter error)
+  const { RetellWebClient } = await import('https://cdn.jsdelivr.net/npm/retell-client-js-sdk@latest/+esm');
 
-function setStatus(type, message) {
-  const el = document.getElementById('callStatus');
-  const dot = document.getElementById('statusDot');
-  const label = document.getElementById('statusLabel');
-  el.className = 'call-status ' + type;
-  el.textContent = message;
-  if (type === 'active') {
-    dot.classList.add('active');
-    label.textContent = 'Call Active';
-  } else if (type === 'connecting') {
-    dot.classList.remove('active');
-    label.textContent = 'Connecting...';
-  } else {
-    dot.classList.remove('active');
-    label.textContent = 'Live AI Demo';
-  }
-}
-
-async function handleCall() {
+  let retellClient = null;
+  let callActive = false;
   const btn = document.getElementById('webCallBtn');
-  if (callActive) {
-    endCall();
-    return;
+
+  function setStatus(type, message) {
+    const el = document.getElementById('callStatus');
+    const dot = document.getElementById('statusDot');
+    const label = document.getElementById('statusLabel');
+    el.className = 'call-status ' + type;
+    el.textContent = message;
+    if (type === 'active') { dot.classList.add('active'); label.textContent = 'Call Active'; }
+    else if (type === 'connecting') { dot.classList.remove('active'); label.textContent = 'Connecting...'; }
+    else { dot.classList.remove('active'); label.textContent = 'Live AI Demo'; }
   }
-  btn.textContent = '⏳ Connecting...';
-  btn.disabled = true;
-  setStatus('connecting', 'Connecting to AI agent...');
-  try {
-    // Step 1: Hit your n8n webhook to get the access token
-    const res = await fetch(N8N_WEBHOOK_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'create_web_call' })
-    });
-    if (!res.ok) throw new Error('Failed to create web call');
-    const data = await res.json();
-    const accessToken = data.access_token;
 
-    // Step 2: Start the Retell web call
-    retellClient = new RetellWebClient();
+  async function handleCall() {
+    if (callActive) { retellClient && retellClient.stopCall(); return; }
+    btn.textContent = '⏳ Connecting...';
+    btn.disabled = true;
+    setStatus('connecting', 'Connecting to AI agent...');
+    try {
+      const res = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'create_web_call' })
+      });
+      const text = await res.text();
+      console.log('n8n raw response:', text);
+      let data;
+      try { data = JSON.parse(text); } catch(e) { throw new Error('n8n returned invalid JSON: ' + text); }
+      if (!data.access_token) throw new Error('No access_token in response: ' + text);
 
-    retellClient.on('call_started', () => {
-      callActive = true;
-      btn.textContent = '🔴 End Call';
-      btn.disabled = false;
-      setStatus('active', '🟢 Connected — AI is listening...');
-    });
+      retellClient = new RetellWebClient();
 
-    retellClient.on('call_ended', () => {
-      callActive = false;
+      retellClient.on('call_started', () => {
+        callActive = true;
+        btn.textContent = '🔴 End Call';
+        btn.disabled = false;
+        setStatus('active', '🟢 Connected — AI is listening...');
+      });
+      retellClient.on('call_ended', () => {
+        callActive = false;
+        btn.textContent = '🎙️ Talk to the AI Now';
+        btn.disabled = false;
+        setStatus('', '');
+        document.getElementById('statusLabel').textContent = 'Live AI Demo';
+      });
+      retellClient.on('error', (err) => {
+        callActive = false;
+        btn.textContent = '🎙️ Talk to the AI Now';
+        btn.disabled = false;
+        setStatus('error', '⚠️ ' + (err.message || 'Something went wrong'));
+      });
+
+      await retellClient.startCall({ accessToken: data.access_token });
+    } catch (err) {
+      console.error('Call error:', err);
       btn.textContent = '🎙️ Talk to the AI Now';
       btn.disabled = false;
-      setStatus('', '');
-      document.getElementById('statusLabel').textContent = 'Live AI Demo';
-    });
-
-    retellClient.on('error', (err) => {
-      callActive = false;
-      btn.textContent = '🎙️ Talk to the AI Now';
-      btn.disabled = false;
-      setStatus('error', '⚠️ Error: ' + (err.message || 'Something went wrong'));
-    });
-
-    await retellClient.startCall({ accessToken });
-  } catch (err) {
-    btn.textContent = '🎙️ Talk to the AI Now';
-    btn.disabled = false;
-    setStatus('error', '⚠️ Could not connect. Check your n8n webhook.');
-    console.error(err);
+      setStatus('error', '⚠️ ' + err.message);
+    }
   }
-}
 
-function endCall() {
-  if (retellClient) retellClient.stopCall();
-}
+  btn.addEventListener('click', handleCall);
 </script>
 </body>
 </html>
